@@ -24,7 +24,10 @@ class RoutesHandler:
             try:
                 response = await session.post('keywords/', json={'url': url})
                 keywords = await response.json()
-                await update_url(self.mongo.url_keywords, url, keywords)
+                if len(keywords) == 0:
+                    await delete_by_url(self.mongo.url_keywords, url)
+                else:
+                    await update_url(self.mongo.url_keywords, url, keywords)
             except Exception:
                 await delete_by_url(self.mongo.url_keywords, url)
 
