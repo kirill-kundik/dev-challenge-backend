@@ -1,11 +1,40 @@
-web:
-  build: .
-  command: python3 -u rest/app.py
-  ports:
-    - "5000:5000"
-  volumes:
-    - .:/dev-challenge
-  links:
-    - db
-db:
-  image: mongo:4.0
+version: '2.1'
+
+services:
+  web:
+    build: .
+    command: python3 -u rest/app.py
+    ports:
+      - "9001:9001"
+    volumes:
+      - .:/dev-challenge
+    links:
+      - db
+      - keywords
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+  keywords:
+    build: .
+    command: python3 -u gen_keywords/main.py
+    ports:
+      - "9002:9002"
+    restart: always
+  db:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes_from:
+      - mongodb-data
+    healthcheck:
+      test: echo 'db.stats().ok' | mongo localhost:27017/dev-challenge --quiet
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    command: mongod --smallfiles
+  mongodb-data:
+    image: mongo:latest
+    volumes:
+      - ./db:/db
+    command: "true"

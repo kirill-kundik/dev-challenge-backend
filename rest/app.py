@@ -4,8 +4,8 @@ import asyncio
 
 from aiohttp import web
 
-from rest.routes import RoutesHandler, setup_routes
-from rest.utils import init_mongo, load_config
+from routes import RoutesHandler, setup_routes
+from utils import init_mongo, load_config
 
 PROJ_ROOT = pathlib.Path(__file__).parent.parent
 

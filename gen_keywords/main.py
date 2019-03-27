@@ -1,10 +1,12 @@
-import asyncio
+import json
 
 import aiohttp
 import re
 
+from aiohttp import web
 
-async def generate_keywords(title: str):
+
+def generate_keywords(title: str):
     title = re.sub(r"[^\w\s]+", '', title)
     title = re.sub(r"\s+", ' ', title)
     title_parts = title.split(' ')
@@ -21,14 +23,25 @@ async def generate_keywords(title: str):
     return res_list
 
 
-async def get_title(url: str):
+async def get_keywords(url: str):
     async with aiohttp.ClientSession() as session:
         response = await session.get(url)
         match = re.search('<title>(.*?)</title>', await response.text())
-        title = match.group(1) if match else 'No title'
-        return await generate_keywords(title)
+        title = match.group(1) if match else None
+        if title is None:
+            return []
+        return generate_keywords(title)
+
+
+async def handle(request):
+    body = await request.json()
+    url = body['url']
+    keywords = await get_keywords(url)
+    return web.Response(text=json.dumps(keywords))
 
 
 if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(get_title('https://google.com'))
+    app = web.Application()
+    app.router.add_post('/', handle)
+
+    web.run_app(app, port=9002)

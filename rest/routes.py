@@ -1,10 +1,12 @@
+import asyncio
+
+import aiohttp
 import json
 
 import bson
 from aiohttp import web
 
-from gen_keywords.main import get_title
-from rest.db import *
+from db import *
 
 
 class RoutesHandler:
@@ -14,6 +16,12 @@ class RoutesHandler:
     @property
     def mongo(self):
         return self._mongo
+
+    async def _wait_for_keywords(self, url):
+        async with aiohttp.ClientSession() as session:
+            response = await session.post('keywords/', json={'url': url})
+            keywords = await response.json()
+            await update_url(self.mongo.url_keywords, url, keywords)
 
     async def get_all(self, request):
         res = []
@@ -39,8 +47,8 @@ class RoutesHandler:
     async def insert_url(self, request):
         body = await request.json()
         url = body['url']
-        keywords = await get_title(url)
-        res = await insert_url(self.mongo.url_keywords, body['url'], keywords)
+        res = await insert_url(self.mongo.url_keywords, body['url'], [])
+        asyncio.create_task(self._wait_for_keywords(url))
         return web.Response(text=str(res))
 
     async def update_url(self, request):
@@ -62,6 +70,8 @@ class RoutesHandler:
 
 
 def doc_to_serializable(doc):
+    if len(doc['keywords']) == 0:
+        return {doc['url']: 'Keywords for this url is under processing now!'}
     return {doc['url']: doc['keywords']}
 
 
