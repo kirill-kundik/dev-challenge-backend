@@ -33,7 +33,7 @@ async def init(loop):
 
 
 def main():
-    logging.basicConfig(level=logging.DEBUG)
+    # logging.basicConfig(level=logging.DEBUG)
 
     loop = asyncio.get_event_loop()
     app, host, port = loop.run_until_complete(init(loop))

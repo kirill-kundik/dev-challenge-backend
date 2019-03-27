@@ -25,16 +25,8 @@ services:
     image: mongo:latest
     ports:
       - "27017:27017"
-    volumes_from:
-      - mongodb-data
     healthcheck:
       test: echo 'db.stats().ok' | mongo localhost:27017/dev-challenge --quiet
       interval: 5s
       timeout: 5s
       retries: 12
-    command: mongod --smallfiles
-  mongodb-data:
-    image: mongo:latest
-    volumes:
-      - ./db:/db
-    command: "true"

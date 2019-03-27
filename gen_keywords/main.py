@@ -43,5 +43,5 @@ async def handle(request):
 if __name__ == '__main__':
     app = web.Application()
     app.router.add_post('/', handle)
-
+    print('Initialized Gen Keywords Service')
     web.run_app(app, port=9002)
