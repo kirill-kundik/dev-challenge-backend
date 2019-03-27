@@ -37,7 +37,7 @@ async def handle(request):
     body = await request.json()
     url = body['url']
     keywords = await get_keywords(url)
-    return web.Response(text=json.dumps(keywords))
+    return web.Response(text=json.dumps({'keywords': keywords}))
 
 
 if __name__ == '__main__':

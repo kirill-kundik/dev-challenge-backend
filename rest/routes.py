@@ -1,4 +1,5 @@
 import asyncio
+import traceback
 
 import aiohttp
 import json
@@ -22,13 +23,15 @@ class RoutesHandler:
     async def _wait_for_keywords(self, url):
         async with aiohttp.ClientSession() as session:
             try:
-                response = await session.post('keywords/', json={'url': url})
-                keywords = await response.json()
+                response = await session.post('http://keywords:9002/', json={'url': url})
+                keywords = await response.read()
+                keywords = json.loads(keywords)
                 if len(keywords) == 0:
                     await delete_by_url(self.mongo.url_keywords, url)
                 else:
                     await update_url(self.mongo.url_keywords, url, keywords)
-            except Exception:
+            except Exception as e:
+                print(e)
                 await delete_by_url(self.mongo.url_keywords, url)
 
     async def get_all(self, request):
