@@ -27,4 +27,4 @@ async def create_payment(user_ip):
         pay_id = await response.read()
         pay_id = json.loads(pay_id)
 
-        return pay_id
+        return pay_id['pay_id']

@@ -9,7 +9,8 @@ async def check_user(user_collection, user_ip, url_id):
         res = {
             'payment_link': 'http://0.0.0.0:9003/?pay_id=' + pay_id,
             'payment_info': await get_payment_info(pay_id),
-            'available_at': 'http://0.0.0.0:9001/getWithCheck?pay_id=' + pay_id + '&id=' + url_id + '&ip=' + user_ip,
+            'available_at': 'http://0.0.0.0:9001/getWithCheck?pay_id=' + pay_id + '&id=' + str(
+                url_id) + '&ip=' + user_ip,
             'how_to_pay':
                 'Send a POST request to http://0.0.0.0/9003 with json {pay_id = your_payment_id, amount = 1000}'
         }
@@ -19,7 +20,8 @@ async def check_user(user_collection, user_ip, url_id):
         res = {
             'payment_link': 'http://0.0.0.0:9003/?pay_id=' + pay_id,
             'payment_info': await get_payment_info(pay_id),
-            'available_at': 'http://0.0.0.0:9001/getWithCheck?pay_id=' + pay_id + '&id=' + url_id + '&ip=' + user_ip,
+            'available_at': 'http://0.0.0.0:9001/getWithCheck?pay_id=' + pay_id + '&id=' + str(
+                url_id) + '&ip=' + user_ip,
             'how_to_pay':
                 'Send a POST request to http://0.0.0.0/9003 with json {pay_id = your_payment_id, amount = 1000}'
         }

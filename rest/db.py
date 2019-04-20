@@ -68,8 +68,6 @@ async def get_keywords_for_user(user_collection, url_collection, user_ip, url):
         'user_ip': user_ip
     })
     if curr_user:
-        one_day = localtime()
-        one_day.tm_mday = one_day.tm_mday + 1
         if convert_str_to_time(curr_user['next_trial']) <= localtime():
             new_urls = curr_user['urls']
             new_urls.append(url)

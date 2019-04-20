@@ -14,6 +14,7 @@ from rest.db import *
 class RoutesHandler:
     def __init__(self, mongo):
         self._mongo = mongo
+        self._mongo.user.drop()
 
     @property
     def mongo(self):
