@@ -25,7 +25,7 @@ async def get_payment(conn, pay_id):
     res = await check.fetchone()
     if not res:
         raise PaymentNotFoundException
-    return res
+    return row2dict(res)
 
 
 async def create_payment(conn, pay):
@@ -34,13 +34,25 @@ async def create_payment(conn, pay):
 
 
 async def proceed_payment(conn, pay):
-    await get_payment(conn, pay)  # check payment if exists
+    await get_payment(conn, pay['id'])  # check payment if exists
     stmt = payment.update().where(payment.c.id == pay['id']).values(amount=payment.c.amount - pay['amount'])
     await conn.execute(stmt)
 
 
-async def check_payment(conn, pay_id):
-    pay = await get_payment(conn, pay_id)
+async def check_payment(conn, pay_id, user_ip):
+    stmt = payment.select().where(payment.c.id == pay_id).where(payment.c.user_ip == user_ip)
+    res = await conn.execute(stmt)
+    pay = await res.fetchone()
+    if not pay:
+        return False
     if pay['amount'] == 0:
         return True
     return False
+
+
+def row2dict(row):
+    d = {}
+    for column in row:
+        d[column] = row[column]
+
+    return d
