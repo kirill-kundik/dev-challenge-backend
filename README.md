@@ -1,6 +1,6 @@
 # dev challenge backend
 
-All the documentation you can find API documentation through https://app.swaggerhub.com/apis-docs/kundik-projects/dev-challenge/1.0.0
+All the documentation you can find API documentation through https://app.swaggerhub.com/apis-docs/dev-challenge-proj/dev-challenge/1.0.0
 
 or in generated html pages (folder `docs/html2-documentation-generated`)
 
