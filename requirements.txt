@@ -1,4 +1,7 @@
+aiopg
+sqlalchemy
 aiohttp
 motor
 pyyaml
 trafaret
+trafaret-config

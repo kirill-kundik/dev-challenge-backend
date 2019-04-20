@@ -3,7 +3,7 @@ version: '2.1'
 services:
   web:
     build: .
-    command: python3 -u rest/app.py
+    command: python3 -m rest
     ports:
       - "9001:9001"
     volumes:
@@ -11,6 +11,7 @@ services:
     links:
       - db
       - keywords
+      - pay_service
     restart: always
     depends_on:
       db:
@@ -21,6 +22,15 @@ services:
     ports:
       - "9002:9002"
     restart: always
+  pay_service:
+    build: .
+    command: python3 -m pay_service
+    ports:
+      - "9003:9003"
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
   db:
     image: mongo:latest
     ports:
@@ -30,3 +40,16 @@ services:
       interval: 5s
       timeout: 5s
       retries: 12
+  postgres:
+    image: postgres:9.6
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+    ports:
+      - "5432:5432"
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5

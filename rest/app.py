@@ -1,11 +1,11 @@
-import logging
 import pathlib
 import asyncio
 
 from aiohttp import web
 
-from routes import RoutesHandler, setup_routes
-from utils import init_mongo, load_config
+from rest.routes.config import setup_routes
+from rest.routes.index_router import RoutesHandler
+from rest.utils import init_mongo, get_config
 
 PROJ_ROOT = pathlib.Path(__file__).parent.parent
 
@@ -21,7 +21,7 @@ async def setup_mongo(app, conf, loop):
 
 
 async def init(loop):
-    conf = load_config(PROJ_ROOT / 'config' / 'config.yml')
+    conf = get_config()
     app = web.Application()
     mongo = await setup_mongo(app, conf, loop)
 
@@ -37,6 +37,7 @@ def main():
 
     loop = asyncio.get_event_loop()
     app, host, port = loop.run_until_complete(init(loop))
+    print('Web service initialized')
     web.run_app(app, host=host, port=port)
 
 

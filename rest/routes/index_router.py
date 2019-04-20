@@ -1,5 +1,4 @@
 import asyncio
-import traceback
 
 import aiohttp
 import json
@@ -7,9 +6,7 @@ import json
 import bson
 from aiohttp import web
 
-from db import *
-
-BASE_URL = '/api/v1'
+from rest.url_db import *
 
 
 class RoutesHandler:
@@ -35,6 +32,11 @@ class RoutesHandler:
                 await delete_by_url(self.mongo.url_keywords, url)
 
     async def get_all(self, request):
+        peername = request.transport.get_extra_info('peername')
+        print(peername)
+        if peername is not None:
+            host, port = peername
+            print(host, port)
         res = []
         async for document in self.mongo.url_keywords.find():
             res.append(doc_to_serializable(document))
@@ -78,7 +80,7 @@ class RoutesHandler:
 
     async def update_url(self, request):
         body = await request.json()
-        check = await get_by_url(self.mongo.url_keywords, url)
+        check = await get_by_url(self.mongo.url_keywords, body['url'])
         if not check:
             return web.Response(status=404)
         await update_url(self.mongo.url_keywords, body['url'], body['keywords'])
@@ -113,15 +115,3 @@ def doc_to_serializable(doc):
     if len(doc['keywords']) == 0:
         return {doc['url']: 'Keywords for this url is under processing now!'}
     return {doc['url']: doc['keywords']}
-
-
-def setup_routes(app, handler):
-    router = app.router
-    h = handler
-    router.add_get(BASE_URL + '/getAll', h.get_all)
-    router.add_get(BASE_URL + '/getByUrl', h.get_by_url)
-    router.add_get(BASE_URL + '/getById', h.get_by_id)
-    router.add_post(BASE_URL + '/add', h.insert_url)
-    router.add_put(BASE_URL + '/update', h.update_url)
-    router.add_delete(BASE_URL + '/deleteById', h.delete_by_id)
-    router.add_delete(BASE_URL + '/deleteByUrl', h.delete_by_url)
