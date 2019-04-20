@@ -1,0 +1,376 @@
+{
+	"info": {
+		"_postman_id": "8e939848-142e-4a24-b644-4f37d9ca6d14",
+		"name": "dev-challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "payments",
+			"item": [
+				{
+					"name": "CREATE PAYMENT",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"user_id\": \"122.32.32.12\"\n}"
+						},
+						"url": {
+							"raw": "http://0.0.0.0:9003/",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "9003",
+							"path": [
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET PAYMENT BY ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://0.0.0.0:9003/?pay_id=2fa50c178893423eb77d5e44e377c945",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "9003",
+							"path": [
+								""
+							],
+							"query": [
+								{
+									"key": "pay_id",
+									"value": "2fa50c178893423eb77d5e44e377c945"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CHECK IF PAYMENT WAS PAID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://0.0.0.0:9003/check?pay_id=2fa50c178893423eb77d5e44e377c945",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "9003",
+							"path": [
+								"check"
+							],
+							"query": [
+								{
+									"key": "pay_id",
+									"value": "2fa50c178893423eb77d5e44e377c945"
+								},
+								{
+									"key": "user_ip",
+									"value": "122.32.32.12",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PAYMENT",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"pay_id\": \"2fa50c178893423eb77d5e44e377c945\",\n\t\"amount\": \"1000\"\n}"
+						},
+						"url": {
+							"raw": "http://0.0.0.0:9003/proceed",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "9003",
+							"path": [
+								"proceed"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "get_keywords",
+			"item": [
+				{
+					"name": "GET ALL USER URLS",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://0.0.0.0:9001/api/v1/getAll",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"getAll"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ADD NEW URL",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"url\": \"https://docs.docker.com/compose/reference/kill/\"\n}"
+						},
+						"url": {
+							"raw": "http://0.0.0.0:9001/api/v1/add",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE EXISTING KEYWORDS",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"url\": \"https://docs.docker.com/compose/reference/kill/\",\n\t\"keywords\": [\"New\", \"New Keywords\"]\n}"
+						},
+						"url": {
+							"raw": "http://0.0.0.0:9001/api/v1/update",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE BY URL",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://0.0.0.0:9001/api/v1/deleteByUrl?url=https://docs.docker.com/compose/reference/kill/",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"deleteByUrl"
+							],
+							"query": [
+								{
+									"key": "url",
+									"value": "https://docs.docker.com/compose/reference/kill/"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET BY URL",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://0.0.0.0:9001/api/v1/getByUrl?url=https://docs.docker.com/compose/reference/kill/",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"getByUrl"
+							],
+							"query": [
+								{
+									"key": "url",
+									"value": "https://docs.docker.com/compose/reference/kill/"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GETTING KEYWORDS AFTER PAYMENT",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://0.0.0.0:9001/api/v1/getWithCheck?pay_id=30bb6cfc363143b383fba0490290c71c&id=5cbb2bbb253289000198d0ff&ip=172.18.0.1",
+							"protocol": "http",
+							"host": [
+								"0",
+								"0",
+								"0",
+								"0"
+							],
+							"port": "9001",
+							"path": [
+								"api",
+								"v1",
+								"getWithCheck"
+							],
+							"query": [
+								{
+									"key": "pay_id",
+									"value": "30bb6cfc363143b383fba0490290c71c"
+								},
+								{
+									"key": "id",
+									"value": "5cbb2bbb253289000198d0ff"
+								},
+								{
+									"key": "ip",
+									"value": "172.18.0.1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
