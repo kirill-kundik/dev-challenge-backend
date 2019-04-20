@@ -2,7 +2,7 @@ postgres:
   database: dev_challenge
   user: dev_user
   password: postgres
-  host: localhost
+  host: postgres
   port: 5432
   minsize: 1
   maxsize: 5
