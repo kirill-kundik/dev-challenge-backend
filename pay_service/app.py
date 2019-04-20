@@ -4,7 +4,7 @@ import logging
 from aiohttp import web
 
 from pay_service.db import payment
-from pay_service.routes import setup_routes
+from pay_service.routes import config_routes
 from pay_service.utils import get_config
 from postgres.db_init import init_db
 from postgres.db_start import init_pg, close_pg
@@ -24,8 +24,7 @@ async def init_app(argv=None):
     # app.on_startup.append(init_security)
     app.on_cleanup.append(close_pg)
 
-    # setup views and routes
-    setup_routes(app)
+    config_routes(app)
 
     return app
 
