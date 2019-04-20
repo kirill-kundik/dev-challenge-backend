@@ -52,7 +52,7 @@ class RoutesHandler:
             return web.HTTPBadRequest()
         res = []
 
-        async for document in await get_all_user_urls(self.mongo.user, self.mongo.url_keywords, user_ip):
+        for document in await get_all_user_urls(self.mongo.user, self.mongo.url_keywords, user_ip):
             res.append(doc_to_serializable(document))
         return web.Response(text=json.dumps(res))
 

@@ -52,7 +52,7 @@ async def create_payment(request):
     pay_id = uuid.uuid4().hex
     pay = {
         'id': pay_id,
-        'user_ip': body['user_id']
+        'user_ip': body['user_ip']
     }
     async with request.app['db'].acquire() as conn:
         await db.create_payment(conn, pay)
