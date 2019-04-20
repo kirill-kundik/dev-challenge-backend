@@ -6,7 +6,9 @@ import json
 import bson
 from aiohttp import web
 
-from rest.url_db import *
+from rest.check_user import check_user
+from rest.payments import check_payment
+from rest.db import *
 
 
 class RoutesHandler:
@@ -31,14 +33,26 @@ class RoutesHandler:
                 print(e)
                 await delete_by_url(self.mongo.url_keywords, url)
 
+    async def get_with_check(self, request):
+        if 'pay_id' not in request.query or 'id' not in request.query or 'ip' not in request.query:
+            return web.HTTPBadRequest()
+        pay_id = request.query['pay_id']
+        url_id = request.query['id']
+        url = await get_by_id(self.mongo.url_keywords, url_id)
+        user_ip = request.query['ip']
+        if await check_payment(pay_id):
+            await add_url_to_user(self.mongo.user, user_ip, url['url'])
+            res = doc_to_serializable(url)
+            return web.Response(text=json.dumps(res))
+        return web.Response(text='You have not paid!')
+
     async def get_all(self, request):
-        peername = request.transport.get_extra_info('peername')
-        print(peername)
-        if peername is not None:
-            host, port = peername
-            print(host, port)
+        user_ip = get_request_ip(request)
+        if user_ip is None:
+            return web.HTTPBadRequest()
         res = []
-        async for document in self.mongo.url_keywords.find():
+
+        async for document in await get_all_user_urls(self.mongo.user, self.mongo.url_keywords, user_ip):
             res.append(doc_to_serializable(document))
         return web.Response(text=json.dumps(res))
 
@@ -58,10 +72,22 @@ class RoutesHandler:
         return web.Response(text=json.dumps(res), status=status)
 
     async def get_by_url(self, request):
+        user_ip = get_request_ip(request)
+        if user_ip is None:
+            return web.HTTPBadRequest
         url = request.query['url']
-        res = await get_by_url(self.mongo.url_keywords, url)
-        if res:
+        try:
+            res = await get_keywords_for_user(self.mongo.user, self.mongo.url_keywords, user_ip, url)
             res = doc_to_serializable(res)
+
+        except Exception:
+            url_id = await get_by_url(self.mongo.url_keywords, url)
+            if url_id:
+                url_id = url_id['_id']
+                res = await check_user(self.mongo.user, user_ip, url_id)
+            else:
+                res = None
+        if res:
             status = 200
         else:
             res = 'This url is not found'
@@ -75,8 +101,10 @@ class RoutesHandler:
         if check:
             return web.Response(status=400)
         res = await insert_url(self.mongo.url_keywords, url, [])
+        print('NEW URL ADDED, ITS ID: ')
+        print(res)
         asyncio.create_task(self._wait_for_keywords(url))
-        return web.Response(text=str(res), status=201)
+        return web.Response(status=201)
 
     async def update_url(self, request):
         body = await request.json()
@@ -115,3 +143,12 @@ def doc_to_serializable(doc):
     if len(doc['keywords']) == 0:
         return {doc['url']: 'Keywords for this url is under processing now!'}
     return {doc['url']: doc['keywords']}
+
+
+def get_request_ip(request):
+    peername = request.transport.get_extra_info('peername')
+    if peername is not None:
+        host, port = peername
+        print(host)
+        return host
+    return None

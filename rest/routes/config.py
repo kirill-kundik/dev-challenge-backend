@@ -11,3 +11,4 @@ def setup_routes(app, handler):
     router.add_put(BASE_URL + '/update', h.update_url)
     router.add_delete(BASE_URL + '/deleteById', h.delete_by_id)
     router.add_delete(BASE_URL + '/deleteByUrl', h.delete_by_url)
+    router.add_get(BASE_URL + '/getWithCheck', h.get_with_check)

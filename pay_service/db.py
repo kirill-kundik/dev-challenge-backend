@@ -39,8 +39,8 @@ async def proceed_payment(conn, pay):
     await conn.execute(stmt)
 
 
-async def check_payment(conn, pay_id, user_ip):
-    stmt = payment.select().where(payment.c.id == pay_id).where(payment.c.user_ip == user_ip)
+async def check_payment(conn, pay_id):
+    stmt = payment.select().where(payment.c.id == pay_id)
     res = await conn.execute(stmt)
     pay = await res.fetchone()
     if not pay:

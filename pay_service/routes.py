@@ -1,6 +1,5 @@
 # routes.py
 import uuid
-import logging
 from aiohttp import web
 import pay_service.db as db
 from pay_service.exceptions import DatabaseException
@@ -8,10 +7,9 @@ from pay_service.exceptions import DatabaseException
 
 async def check_payment(request):
     pay_id = request.rel_url.query['pay_id']
-    user_ip = request.rel_url.query['user_ip']
     async with request.app['db'].acquire() as conn:
         try:
-            res = await db.check_payment(conn, pay_id, user_ip)
+            res = await db.check_payment(conn, pay_id)
         except DatabaseException:
             res = False
         return web.json_response({'success': res})
@@ -23,6 +21,10 @@ async def get_payment(request):
         async with request.app['db'].acquire() as conn:
             try:
                 res = await db.get_payment(conn, pay_id)
+                res.update({
+                    'how_to_pay':
+                        'Send a POST request to http://0.0.0.0/9003 with json {pay_id = your_payment_id, amount = 1000}'
+                })
                 return web.json_response(res)
             except DatabaseException:
                 return web.HTTPBadRequest()
